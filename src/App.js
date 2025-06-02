@@ -1,24 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import { Outlet, Navigate } from 'react-router-dom';
+import MainLayout from './components/layout/MainLayout';
+import useAuthStore from './store/authStore';
+import { CartProvider } from './context/CartContext';
 
 function App() {
+  // Get authentication state from the store
+  const { isAuthenticated } = useAuthStore();
+  
+  console.log('App rendering, isAuthenticated:', isAuthenticated);
+  
+  if (!isAuthenticated) {
+    console.log('Not authenticated, redirecting to login');
+    return <Navigate to="/login" replace />;
+  }
+
+  console.log('Authenticated, rendering MainLayout');
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <CartProvider>
+      <MainLayout>
+        <Outlet />
+      </MainLayout>
+    </CartProvider>
   );
 }
 
